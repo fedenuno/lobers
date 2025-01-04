@@ -43,10 +43,16 @@ class SendCommand extends Command {
 
         $clientes = Customer::select('id','movil')->where('estatus', '=', 1)->skip(0)->take(80)->get()->toArray();
         foreach ($clientes as $key => $value) {
-            $message = $twilio->messages->create("whatsapp:+521{$value['movil']}",
-                                                 ["contentSid" => "HX271bbddb1baf91fa338b988ab424ad0e",
-                                                  "from"       => "MG984ef00c2c32d86d280506bb893d8e48",]);
-            Customer::where('id', '=', $value['id'])->update(['estatus' => 0, 'updated_at' => date('Y-m-d H:i:s')]);
+            $movil = str_replace([' ','-'],
+                                 ['',''], $value['movil']);
+            if(strlen($movil) == 10) {
+                $message = $twilio->messages->create("whatsapp:+521$movil",
+                                                     ["contentSid" => "HX271bbddb1baf91fa338b988ab424ad0e",
+                                                      "from"       => "MG984ef00c2c32d86d280506bb893d8e48",]);
+                Customer::where('id', '=', $value['id'])->update(['estatus' => 0, 'updated_at' => date('Y-m-d H:i:s')]);    
+            } else {
+                Customer::where('id', '=', $value['id'])->update(['estatus' => 9, 'updated_at' => date('Y-m-d H:i:s')]); 
+            }
         }
     }
 }
