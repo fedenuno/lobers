@@ -1,0 +1,150 @@
+<div class="MegaMenuJn oculto">
+  <div class="MegaMenuTopJn">
+    <button type="button" class="BtnCerrarMenuJn"><i class="fa fa-times"></i></button>
+  </div>
+  <ul class="MainMenuJn">
+    {% for link in linklists[section.settings.header_menu_2].links %}
+      {% assign child_list_handle = link.title | handleize %}
+      {% assign megamenu = false %}
+
+      {% for block in section.blocks %}
+        {% if block.type == 'megamenu' %}
+          {% if child_list_handle == block.settings.mega_menu %}
+          {% include 'ver-mega-menu' %}
+          {% assign megamenu = true %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+      {% if megamenu == false %}
+        {% if link.links != blank %}
+          <li class="FilaJn {{ forloop.index }}">
+            <a href="{{ link.url }}" data-submenu="NivelUno{{ forloop.index }}" class="LinkJn"><span>{{ link.title }} <i class="fa fa-chevron-right MarcaSub"></i></span></a>
+            <ul id="NivelUno{{ forloop.index }}" class="NivelUno oculto">
+              {% for childlink in link.links %}
+                <li class="FilaJn">
+                  <a class="LinkJn" href="{{ childlink.url }}" data-submenu="NivelDos{{ forloop.index }}">
+                    <span> 
+                      {{ childlink.title | escape }} 
+                      {% if childlink.links != blank %}
+                      <i class="fa fa-chevron-right MarcaSub"></i>
+                      {% endif %}
+                    </span>
+                  </a>
+
+                  {% if childlink.links != blank %}
+                    <ul id="NivelDos{{ forloop.index }}" class="NivelDos oculto">
+                      {% for grandchild in childlink.links %}
+                        <li class="FilaJn">
+                          <a class="LinkJn" href="{{ grandchild.url }}"><span>{{ grandchild.title | escape }}</span></a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% else %}
+          <li id="{{ forloop.index }}" class="FilaJn"><a href="{{ link.url }}" class="LinkJn"><span>{{ link.title }}</span></a></li>
+        {% endif %}
+      {% endif %} 
+    {% endfor %}
+  </ul>
+</div>
+
+<nav id="top"class="hd2">
+  <div class="container">
+    <div class="container-inner">
+      <div class="box box-left">
+        {% if section.settings.header_message != blank %}
+        <p class="header-phone">{{ section.settings.header_message }}</p>
+        {% endif %}
+      </div>
+      <ul class="box box-right">
+        <li class="setting">
+          <div class="btn-group">
+            <button class="btn btn-link dropdown-toggle" data-toggle="dropdown">{{ 'homepage.navigation.my_account' | t }} <i class="fa fa-angle-down"></i></button>
+            <div class="dropdown-menu" id="top-links">
+              <ul class="ul-account list-unstyled">
+                {% if shop.customer_accounts_enabled %}
+                {% if customer %}
+                <li><a href="/account"><span>{{ 'homepage.navigation.my_account' | t }}</span></a></li>
+                <li><a href="/account/logout" id="customer_logout_link"><span>{{ 'layout.customer.log_out' | t }}</span></a></li>
+                {% else %}
+                <li><a href="/account/login" id="customer_login_link"><span>{{ 'layout.customer.sign_in' | t }}</span></a></li>
+                {% if shop.customer_accounts_optional %}
+                <li><a href="/account/register" id="customer_register_link"><span>{{ 'layout.customer.create_account' | t }}</span></a></li>
+                {% endif %}
+                {% endif %}
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="currency">
+          {% include 'header-currency' %}
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="hd2">
+  <div class="header-inner">
+    <div class="container">
+      <div class="container-inner">
+        <div class="logo-container">
+          <div id="logo">
+            {% include 'logo' %}
+          </div>
+        </div>
+        <div class="col-search">
+          {% include 'header-search' %}
+          {% include 'header-cart'%}
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+  {% comment %}
+  <div class="top-menu">
+    <div class="container">
+      <div class="row">
+        <div class="col col-md-3 col-xs-12 col-menu" style="border: solid 1px #F00;">
+          {% include 'header-ver-nav' %}
+        </div>
+        <div class="col col-md-9 col-xs-12 hoz-menu">
+          <div class="hozmenu-container">
+            <div class="ma-nav-mobile-container">
+              {% include 'header-mob-nav', menu:'section.settings.header_menu_1' %}
+            </div>
+            <div class="nav-container visible-lg visible-md">
+              {% include 'main-menu', c:false %}
+            </div>
+          </div>
+          <div id="sticky-menu" data-sticky="1"></div>
+          <script type="text/javascript">
+            //<![CDATA[
+            var body_class = $('body').attr('class'); 
+            if(body_class.search('common-home') != -1) {
+              $('#pt_menu_home').addClass('act');
+            }	
+            var CUSTOMMENU_POPUP_EFFECT =0
+            var CUSTOMMENU_POPUP_TOP_OFFSET = 70
+            //]]>
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endcomment %}
+  <div class="top-menu">
+    <div class="container">
+      <div class="row">
+        <div class="col col-md-3 col-xs-12 col-menu">
+          <button type="button" class="BtnMenuJn"><i class="icon ion-navicon-round"></i> MENÚ{% comment %}{{ 'homepage.navigation.shop_by_categories' | t }}{% endcomment %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
